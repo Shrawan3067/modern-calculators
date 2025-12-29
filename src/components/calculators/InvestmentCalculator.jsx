@@ -1,7 +1,19 @@
 import { useState, useMemo, useEffect } from "react";
 import InputGroup from "../ui/InputGroup";
 import ResultDisplay from "../charts/ResultDisplay";
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function InvestmentCalculator() {
   const [calculationType, setCalculationType] = useState("futureValue");
@@ -61,8 +73,8 @@ export default function InvestmentCalculator() {
   const [errors, setErrors] = useState({});
 
   // Add chart colors
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
-  const BAR_COLORS = ['#3b82f6', '#10b981'];
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
+  const BAR_COLORS = ["#3b82f6", "#10b981"];
 
   // Add these table rendering functions
   const renderInvestmentTable = (data) => {
@@ -274,13 +286,18 @@ export default function InvestmentCalculator() {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                label={({ name, percent }) =>
+                  `${name}: ${(percent * 100).toFixed(1)}%`
+                }
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
               >
                 {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
                 ))}
               </Pie>
               <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
@@ -303,7 +320,9 @@ export default function InvestmentCalculator() {
             <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey={xKey} />
-              <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+              <YAxis
+                tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+              />
               <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
               <Legend />
               {bars.map((bar, index) => (
@@ -332,17 +351,21 @@ export default function InvestmentCalculator() {
       case "investmentGrowth": {
         const pieData = [
           { name: "Initial Investment", value: results.initial || 0 },
-          { name: "Contributions", value: (results.totalContributions || 0) - (results.initial || 0) },
+          {
+            name: "Contributions",
+            value: (results.totalContributions || 0) - (results.initial || 0),
+          },
           { name: "Interest Earned", value: results.totalInterest || 0 },
-        ].filter(item => item.value > 0);
+        ].filter((item) => item.value > 0);
 
         // Prepare bar chart data (first 10 years or all years if less than 10)
-        const barData = results.breakdown?.slice(0, 10).map(item => ({
-          year: item.year,
-          "Total Contributions": item.contributions,
-          "Interest Earned": item.interest,
-          "Total Balance": item.balance
-        })) || [];
+        const barData =
+          results.breakdown?.slice(0, 10).map((item) => ({
+            year: item.year,
+            "Total Contributions": item.contributions,
+            "Interest Earned": item.interest,
+            "Total Balance": item.balance,
+          })) || [];
 
         return { pieData, barData };
       }
@@ -351,14 +374,15 @@ export default function InvestmentCalculator() {
         const pieData = [
           { name: "Initial Investment", value: results.initial || 0 },
           { name: "Total Gains", value: results.totalGains || 0 },
-        ].filter(item => item.value > 0);
+        ].filter((item) => item.value > 0);
 
-        const barData = results.breakdown?.slice(0, 10).map(item => ({
-          year: item.year,
-          "Initial Investment": results.initial || 0,
-          "Gains": item.gains,
-          "Total Value": item.value
-        })) || [];
+        const barData =
+          results.breakdown?.slice(0, 10).map((item) => ({
+            year: item.year,
+            "Initial Investment": results.initial || 0,
+            Gains: item.gains,
+            "Total Value": item.value,
+          })) || [];
 
         return { pieData, barData };
       }
@@ -366,15 +390,30 @@ export default function InvestmentCalculator() {
       case "retirement": {
         const pieData = [
           { name: "Current Savings", value: results.currentSavings || 0 },
-          { name: "Future Contributions", value: (results.monthlyContribution || 0) * 12 * (results.yearsToRetirement || 0) },
-          { name: "Interest Earned", value: (results.retirementSavings || 0) - (results.currentSavings || 0) - ((results.monthlyContribution || 0) * 12 * (results.yearsToRetirement || 0)) },
-        ].filter(item => item.value > 0);
+          {
+            name: "Future Contributions",
+            value:
+              (results.monthlyContribution || 0) *
+              12 *
+              (results.yearsToRetirement || 0),
+          },
+          {
+            name: "Interest Earned",
+            value:
+              (results.retirementSavings || 0) -
+              (results.currentSavings || 0) -
+              (results.monthlyContribution || 0) *
+                12 *
+                (results.yearsToRetirement || 0),
+          },
+        ].filter((item) => item.value > 0);
 
-        const barData = results.withdrawalSchedule?.map(item => ({
-          year: item.year,
-          "Remaining Balance": item.remainingBalance,
-          "Annual Withdrawal": item.annualWithdrawal
-        })) || [];
+        const barData =
+          results.withdrawalSchedule?.map((item) => ({
+            year: item.year,
+            "Remaining Balance": item.remainingBalance,
+            "Annual Withdrawal": item.annualWithdrawal,
+          })) || [];
 
         return { pieData, barData };
       }
@@ -383,14 +422,18 @@ export default function InvestmentCalculator() {
         const pieData = [
           { name: "Investment 1", value: results.investment1 || 0 },
           { name: "Investment 2", value: results.investment2 || 0 },
-          { name: "Future Value Difference", value: Math.abs(results.difference || 0) },
-        ].filter(item => item.value > 0);
+          {
+            name: "Future Value Difference",
+            value: Math.abs(results.difference || 0),
+          },
+        ].filter((item) => item.value > 0);
 
-        const barData = results.breakdown?.slice(0, 10).map(item => ({
-          year: item.year,
-          "Investment 1": item.investment1,
-          "Investment 2": item.investment2,
-        })) || [];
+        const barData =
+          results.breakdown?.slice(0, 10).map((item) => ({
+            year: item.year,
+            "Investment 1": item.investment1,
+            "Investment 2": item.investment2,
+          })) || [];
 
         return { pieData, barData };
       }
@@ -399,7 +442,7 @@ export default function InvestmentCalculator() {
         const pieData = [
           { name: "Initial Investment", value: results.initial || 0 },
           { name: "Total Profit", value: results.profit || 0 },
-        ].filter(item => item.value > 0);
+        ].filter((item) => item.value > 0);
 
         // For ROI, create a simple bar showing initial vs final
         const barData = [
@@ -1711,7 +1754,7 @@ export default function InvestmentCalculator() {
             <div className="space-y-6">
               {/* Results Summary */}
               <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                <h2 className="text-2xl py-1 text-white text-center bg-green-700 font-bold mb-4">
                   Results
                 </h2>
                 <p className="text-gray-600 mb-6">{results.calculation}</p>
@@ -1733,60 +1776,101 @@ export default function InvestmentCalculator() {
                 {/* Charts Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                   {/* Pie Chart */}
-                  {chartData.pieData.length > 0 && (
-                    renderPieChart(chartData.pieData, "Investment Composition")
-                  )}
+                  {chartData.pieData.length > 0 &&
+                    renderPieChart(chartData.pieData, "Investment Composition")}
 
                   {/* Bar Chart */}
-                  {chartData.barData.length > 0 && calculationType !== "roi" && (
+                  {chartData.barData.length > 0 &&
+                    calculationType !== "roi" &&
                     renderBarChart(
                       chartData.barData,
-                      calculationType === "comparison" 
-                        ? "Investment Comparison Over Time" 
+                      calculationType === "comparison"
+                        ? "Investment Comparison Over Time"
                         : calculationType === "retirement"
-                        ? "Retirement Withdrawal Schedule"
-                        : "Growth Over Time",
+                          ? "Retirement Withdrawal Schedule"
+                          : "Growth Over Time",
                       "year",
                       calculationType === "comparison"
                         ? [
-                            { dataKey: "Investment 1", name: "Investment 1", color: BAR_COLORS[0] },
-                            { dataKey: "Investment 2", name: "Investment 2", color: BAR_COLORS[1] }
+                            {
+                              dataKey: "Investment 1",
+                              name: "Investment 1",
+                              color: BAR_COLORS[0],
+                            },
+                            {
+                              dataKey: "Investment 2",
+                              name: "Investment 2",
+                              color: BAR_COLORS[1],
+                            },
                           ]
                         : calculationType === "retirement"
-                        ? [
-                            { dataKey: "Remaining Balance", name: "Remaining Balance", color: BAR_COLORS[0] },
-                            { dataKey: "Annual Withdrawal", name: "Annual Withdrawal", color: BAR_COLORS[1] }
-                          ]
-                        : [
-                            { dataKey: "Total Contributions", name: "Contributions", color: BAR_COLORS[0] },
-                            { dataKey: "Interest Earned", name: "Interest", color: BAR_COLORS[1] },
-                            { dataKey: "Total Balance", name: "Total", color: "#FFBB28" }
-                          ]
-                    )
-                  )}
+                          ? [
+                              {
+                                dataKey: "Remaining Balance",
+                                name: "Remaining Balance",
+                                color: BAR_COLORS[0],
+                              },
+                              {
+                                dataKey: "Annual Withdrawal",
+                                name: "Annual Withdrawal",
+                                color: BAR_COLORS[1],
+                              },
+                            ]
+                          : [
+                              {
+                                dataKey: "Total Contributions",
+                                name: "Contributions",
+                                color: BAR_COLORS[0],
+                              },
+                              {
+                                dataKey: "Interest Earned",
+                                name: "Interest",
+                                color: BAR_COLORS[1],
+                              },
+                              {
+                                dataKey: "Total Balance",
+                                name: "Total",
+                                color: "#FFBB28",
+                              },
+                            ]
+                    )}
 
                   {/* Special ROI Bar Chart */}
-                  {calculationType === "roi" && chartData.barData.length > 0 && (
-                    <div className="bg-white rounded-xl shadow-lg p-6 lg:col-span-2">
-                      <h3 className="text-xl font-bold text-gray-900 mb-4">ROI Comparison</h3>
-                      <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={chartData.barData}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                            <XAxis dataKey="name" />
-                            <YAxis tickFormatter={(value) => `$${value.toLocaleString()}`} />
-                            <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
-                            <Bar 
-                              dataKey="value" 
-                              name="Value" 
-                              fill={BAR_COLORS[0]} 
-                              radius={[4, 4, 0, 0]}
-                            />
-                          </BarChart>
-                        </ResponsiveContainer>
+                  {calculationType === "roi" &&
+                    chartData.barData.length > 0 && (
+                      <div className="bg-white rounded-xl shadow-lg p-6 lg:col-span-2">
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">
+                          ROI Comparison
+                        </h3>
+                        <div className="h-64">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={chartData.barData}>
+                              <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="#f0f0f0"
+                              />
+                              <XAxis dataKey="name" />
+                              <YAxis
+                                tickFormatter={(value) =>
+                                  `$${value.toLocaleString()}`
+                                }
+                              />
+                              <Tooltip
+                                formatter={(value) =>
+                                  `$${value.toLocaleString()}`
+                                }
+                              />
+                              <Bar
+                                dataKey="value"
+                                name="Value"
+                                fill={BAR_COLORS[0]}
+                                radius={[4, 4, 0, 0]}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </div>
 
                 {/* Primary Results Display */}
