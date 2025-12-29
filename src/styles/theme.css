@@ -1,0 +1,34 @@
+/* Theme CSS variables for JavaScript access */
+:root {
+  --theme-light: light;
+  --theme-dark: dark;
+  --current-theme: var(--theme-light);
+}
+
+.dark {
+  --current-theme: var(--theme-dark);
+}
+
+/* Utility classes for theme transitions */
+.theme-transition {
+  @apply transition-all duration-300 ease-smooth;
+}
+
+.theme-transition-colors {
+  @apply transition-colors duration-300 ease-smooth;
+}
+
+.theme-transition-transform {
+  @apply transition-transform duration-300 ease-smooth;
+}
+
+/* Forced theme classes */
+.force-light {
+  color-scheme: light !important;
+  --current-theme: var(--theme-light) !important;
+}
+
+.force-dark {
+  color-scheme: dark !important;
+  --current-theme: var(--theme-dark) !important;
+}
